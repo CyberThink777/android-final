@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/musicListFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_music_note_white_24dp"
+        android:title="@string/music_page_title" />
+    <item
+        android:id="@+id/videoListFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_movie_white_24dp"
+        android:title="@string/video_page_title" />
+</menu>

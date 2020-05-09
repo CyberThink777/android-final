@@ -3,10 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/musicListFragment">
     <fragment
-        android:id="@+id/mainFragment"
-        android:name="org.mantap.finalcuk.MainFragment"
-        android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        android:id="@+id/musicListFragment"
+        android:name="org.mantap.finalcuk.MusicListFragment"
+        android:label="fragment_music"
+        tools:layout="@layout/fragment_music">
+        <action
+            android:id="@+id/action_musicListFragment_to_videoListFragment"
+            app:destination="@id/videoListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/videoListFragment"
+        android:name="org.mantap.finalcuk.VideoListFragment"
+        android:label="fragment_video"
+        tools:layout="@layout/fragment_video" >
+        <action
+            android:id="@+id/action_videoListFragment_to_musicListFragment"
+            app:destination="@id/musicListFragment" />
+    </fragment>
 </navigation>
