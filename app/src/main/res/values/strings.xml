@@ -2,4 +2,8 @@
     <string name="app_name">MediaPlayer</string>
     <string name="music_page_title">Music</string>
     <string name="video_page_title">Video</string>
+    <string name="delete">Delete</string>
+    <string name="details">Details</string>
+    <string name="options">Options</string>
+    <string name="thumbnail">Thumbnail</string>
 </resources>

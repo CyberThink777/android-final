@@ -35,7 +35,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     }
 
     public static class VideoListViewHolder extends RecyclerView.ViewHolder {
-        private final View itemView;
+        private View itemView;
 
         public VideoListViewHolder(@NonNull View itemView) {
             super(itemView);
