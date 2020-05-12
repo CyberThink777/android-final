@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -23,7 +24,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_movie_black_24dp"/>
+            android:src="@drawable/ic_movie_black_24dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -37,15 +38,16 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:id="@+id/video_title"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Judul" />
+                android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/video_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Subtitle" />
+                android:text="30MB | 24:10" />
         </LinearLayout>
 
         <ImageButton
