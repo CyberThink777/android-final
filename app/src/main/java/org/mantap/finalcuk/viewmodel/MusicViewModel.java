@@ -4,8 +4,10 @@ import android.app.Application;
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -24,6 +26,7 @@ public class MusicViewModel extends AndroidViewModel {
         this.application = application;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public CompletableFuture<Void> populate() {
         return CompletableFuture.runAsync(() -> {
             String[] projection = new String[]{
@@ -56,7 +59,7 @@ public class MusicViewModel extends AndroidViewModel {
                         String artist = cursor.getString(artistColumn);
                         int duration = cursor.getInt(durationColumn);
                         int size = cursor.getInt(sizeColumn);
-                        String date = cursor.getString(dateColumn);
+                        int date = cursor.getInt(dateColumn);
 
                         Uri contentUri = ContentUris.withAppendedId(
                                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
@@ -68,6 +71,7 @@ public class MusicViewModel extends AndroidViewModel {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public LiveData<List<Music>> getMusicList() {
         populate();
         return musicList;

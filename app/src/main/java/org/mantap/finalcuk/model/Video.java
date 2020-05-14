@@ -9,9 +9,9 @@ public class Video {
     private final String title;
     private final int duration;
     private final int size;
-    private final String dateAdded;
+    private final int dateAdded;
 
-    public Video(Uri uri, String title, int duration, int size, String dateAdded) {
+    public Video(Uri uri, String title, int duration, int size, int dateAdded) {
         this.uri = uri;
         this.title = title;
         this.duration = duration;
@@ -41,7 +41,7 @@ public class Video {
         return String.format(Locale.ENGLISH, "%.2f MB", size);
     }
 
-    public String getDateAdded() {
+    public int getDateAdded() {
         return dateAdded;
     }
 }
