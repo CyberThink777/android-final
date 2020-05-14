@@ -7,14 +7,20 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.mantap.finalcuk.adapter.VideoListAdapter;
-import org.mantap.finalcuk.model.Video;
-
-import java.util.Arrays;
+import org.mantap.finalcuk.viewmodel.VideoViewModel;
 
 public class VideoListFragment extends Fragment {
+    private VideoViewModel viewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(VideoViewModel.class);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -23,8 +29,7 @@ public class VideoListFragment extends Fragment {
         VideoListAdapter adapter = new VideoListAdapter(this.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        //TODO this is only placeholder
-        adapter.setVideoList(Arrays.asList(new Video(123123), new Video(123)));
+        viewModel.getVideoList().observe(getViewLifecycleOwner(), adapter::setVideoList);
         return v;
     }
 }

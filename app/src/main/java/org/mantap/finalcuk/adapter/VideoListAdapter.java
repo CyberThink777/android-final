@@ -42,16 +42,19 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         private View itemView;
         private ImageButton option;
         private TextView title;
+        private TextView subtitle;
 
         public VideoListViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
             title = itemView.findViewById(R.id.video_title);
+            subtitle = itemView.findViewById(R.id.video_subtitle);
             option = itemView.findViewById(R.id.optionButton);
         }
 
         void bind(Video video) {
-            title.setText(video.getId() + "");
+            title.setText(video.getTitle() + "");
+            subtitle.setText(String.format("%s | %s", video.getSize(), video.getDuration()));
             option.setOnClickListener(v -> {
                 PopupMenu popupMenu = new PopupMenu(itemView.getContext(), option);
                 popupMenu.inflate(R.menu.media_option);

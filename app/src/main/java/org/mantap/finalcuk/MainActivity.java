@@ -27,6 +27,5 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         BottomNavigationView botNav = findViewById(R.id.bottom_navigation);
         NavigationUI.setupWithNavController(botNav, navController);
-        //TODO MediaScan
     }
 }
