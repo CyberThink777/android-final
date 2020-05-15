@@ -2,6 +2,7 @@ package org.mantap.finalcuk.model;
 
 import android.net.Uri;
 
+import java.util.Date;
 import java.util.Locale;
 
 public class Video {
@@ -9,9 +10,9 @@ public class Video {
     private final String title;
     private final int duration;
     private final int size;
-    private final int dateAdded;
+    private final long dateAdded;
 
-    public Video(Uri uri, String title, int duration, int size, int dateAdded) {
+    public Video(Uri uri, String title, int duration, int size, long dateAdded) {
         this.uri = uri;
         this.title = title;
         this.duration = duration;
@@ -41,7 +42,16 @@ public class Video {
         return String.format(Locale.ENGLISH, "%.2f MB", size);
     }
 
-    public int getDateAdded() {
-        return dateAdded;
+    public String getDateAdded() {
+        return new Date(dateAdded).toString();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Location: %s\n" +
+                "Title: %s\n" +
+                "Duration: %s\n" +
+                "Size: %s\n" +
+                "Date: %s", uri.getPath(), getTitle(), getDuration(), getSize(), getDateAdded());
     }
 }

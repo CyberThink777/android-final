@@ -12,6 +12,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.mantap.finalcuk.R;
 import org.mantap.finalcuk.model.Video;
 
@@ -66,6 +67,9 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
                 PopupMenu popupMenu = new PopupMenu(itemView.getContext(), option);
                 popupMenu.inflate(R.menu.media_option);
                 popupMenu.show();
+
+                //Handle Details
+                popupMenu.getMenu().getItem(1).setOnMenuItemClickListener(item -> onClickDetails(video));
             });
             try {
                 thumbnail.setImageBitmap(itemView.getContext()
@@ -75,6 +79,13 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             } catch (IOException e) {
                 Log.e("VideoThumbnail", Objects.requireNonNull(e.getMessage()));
             }
+        }
+
+        private boolean onClickDetails(Video video) {
+            new MaterialAlertDialogBuilder(itemView.getContext())
+                    .setTitle("Details")
+                    .setMessage(video.toString()).show();
+            return true;
         }
     }
 

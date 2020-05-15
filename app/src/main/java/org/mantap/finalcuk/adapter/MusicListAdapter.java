@@ -12,6 +12,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.mantap.finalcuk.R;
 import org.mantap.finalcuk.model.Music;
 
@@ -66,6 +67,8 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                 PopupMenu popupMenu = new PopupMenu(itemView.getContext(), option);
                 popupMenu.inflate(R.menu.media_option);
                 popupMenu.show();
+                //Handle Details
+                popupMenu.getMenu().getItem(1).setOnMenuItemClickListener(item -> onClickDetails(music));
             });
             try {
                 thumbnail.setImageBitmap(itemView.getContext()
@@ -76,10 +79,18 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                 Log.e("MusicThumbnail", Objects.requireNonNull(e.getMessage()));
             }
         }
+
+        private boolean onClickDetails(Music music) {
+            new MaterialAlertDialogBuilder(itemView.getContext())
+                    .setTitle("Details")
+                    .setMessage(music.toString()).show();
+            return true;
+        }
     }
 
     public void setMusicList(List<Music> musicList) {
         this.musicList = musicList;
         notifyDataSetChanged();
     }
+
 }

@@ -27,7 +27,7 @@ public class MusicViewModel extends AndroidViewModel {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q) //TODO FIX This!
-    public void populate() {
+    private void populate() {
         CompletableFuture.runAsync(() -> {
             String[] projection = new String[]{
                     MediaStore.Audio.Media._ID,
@@ -59,7 +59,7 @@ public class MusicViewModel extends AndroidViewModel {
                         String artist = cursor.getString(artistColumn);
                         int duration = cursor.getInt(durationColumn);
                         int size = cursor.getInt(sizeColumn);
-                        int date = cursor.getInt(dateColumn);
+                        long date = cursor.getLong(dateColumn) * 1000;
 
                         Uri contentUri = ContentUris.withAppendedId(
                                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);

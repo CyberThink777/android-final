@@ -27,7 +27,7 @@ public class VideoViewModel extends AndroidViewModel {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void populate() {
+    private void populate() {
         CompletableFuture.runAsync(() -> {
             String[] projection = new String[]{
                     MediaStore.Video.Media._ID,
@@ -56,7 +56,7 @@ public class VideoViewModel extends AndroidViewModel {
                         String name = cursor.getString(nameColumn);
                         int duration = cursor.getInt(durationColumn);
                         int size = cursor.getInt(sizeColumn);
-                        int date = cursor.getInt(dateColumn);
+                        long date = cursor.getLong(dateColumn) * 1000;
 
                         Uri contentUri = ContentUris.withAppendedId(
                                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
