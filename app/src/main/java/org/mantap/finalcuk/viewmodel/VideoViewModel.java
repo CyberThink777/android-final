@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class VideoViewModel extends AndroidViewModel {
     private final Application application;
-    private MutableLiveData<List<Video>> videoList = new MutableLiveData<>();
+    private final MutableLiveData<List<Video>> videoList = new MutableLiveData<>();
 
     public VideoViewModel(@NonNull Application application) {
         super(application);
@@ -27,8 +27,8 @@ public class VideoViewModel extends AndroidViewModel {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public CompletableFuture<Void> populate() {
-        return CompletableFuture.runAsync(() -> {
+    public void populate() {
+        CompletableFuture.runAsync(() -> {
             String[] projection = new String[]{
                     MediaStore.Video.Media._ID,
                     MediaStore.Video.Media.DISPLAY_NAME,

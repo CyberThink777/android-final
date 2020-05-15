@@ -1,6 +1,7 @@
 package org.mantap.finalcuk.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.mantap.finalcuk.R;
 import org.mantap.finalcuk.model.Music;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.MusicListViewHolder> {
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
     private List<Music> musicList;
 
     public MusicListAdapter(Context context) {
@@ -41,11 +44,11 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
     }
 
     public static class MusicListViewHolder extends RecyclerView.ViewHolder {
-        private View itemView;
-        private ImageButton option;
-        private TextView title;
-        private TextView subtitle;
-        private ImageView thumbnail;
+        private final View itemView;
+        private final ImageButton option;
+        private final TextView title;
+        private final TextView subtitle;
+        private final ImageView thumbnail;
 
         public MusicListViewHolder(View itemView) {
             super(itemView);
@@ -53,6 +56,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
             title = itemView.findViewById(R.id.music_title);
             subtitle = itemView.findViewById(R.id.music_subtitle);
             option = itemView.findViewById(R.id.optionButton);
+            thumbnail = itemView.findViewById(R.id.thumbnail);
         }
 
         void bind(Music music) {
@@ -63,14 +67,13 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                 popupMenu.inflate(R.menu.media_option);
                 popupMenu.show();
             });
-            //TODO fix this
             try {
-                thumbnail.setImageBitmap(itemView
-                        .getContext()
+                thumbnail.setImageBitmap(itemView.getContext()
                         .getApplicationContext()
                         .getContentResolver()
-                        .loadThumbnail(music.getUri(), new Size(48, 48), null));
-            } catch (Exception ignored) {
+                        .loadThumbnail(music.getUri(), new Size(128, 128), null));
+            } catch (IOException e) {
+                Log.e("MusicThumbnail", Objects.requireNonNull(e.getMessage()));
             }
         }
     }

@@ -19,16 +19,16 @@ import java.util.concurrent.CompletableFuture;
 
 public class MusicViewModel extends AndroidViewModel {
     private final Application application;
-    private MutableLiveData<List<Music>> musicList = new MutableLiveData<>();
+    private final MutableLiveData<List<Music>> musicList = new MutableLiveData<>();
 
     public MusicViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    public CompletableFuture<Void> populate() {
-        return CompletableFuture.runAsync(() -> {
+    @RequiresApi(api = Build.VERSION_CODES.Q) //TODO FIX This!
+    public void populate() {
+        CompletableFuture.runAsync(() -> {
             String[] projection = new String[]{
                     MediaStore.Audio.Media._ID,
                     MediaStore.Audio.Media.TITLE,
