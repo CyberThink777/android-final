@@ -11,13 +11,15 @@ public class Video {
     private final int duration;
     private final int size;
     private final long dateAdded;
+    private final String filePath;
 
-    public Video(Uri uri, String title, int duration, int size, long dateAdded) {
+    public Video(Uri uri, String title, int duration, int size, long dateAdded, String filePath) {
         this.uri = uri;
         this.title = title;
         this.duration = duration;
         this.size = size;
         this.dateAdded = dateAdded;
+        this.filePath = filePath;
     }
 
     public Uri getUri() {
@@ -52,6 +54,6 @@ public class Video {
                 "Title: %s\n" +
                 "Duration: %s\n" +
                 "Size: %s\n" +
-                "Date: %s", uri.getPath(), getTitle(), getDuration(), getSize(), getDateAdded());
+                "Date: %s", filePath, getTitle(), getDuration(), getSize(), getDateAdded());
     }
 }

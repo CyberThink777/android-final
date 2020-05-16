@@ -12,14 +12,16 @@ public class Music {
     private final int duration;
     private final int size;
     private final long dateAdded;
+    private final String filePath;
 
-    public Music(Uri uri, String title, String artist, int duration, int size, long dateAdded) {
+    public Music(Uri uri, String title, String artist, int duration, int size, long dateAdded, String filePath) {
         this.uri = uri;
         this.title = title;
         this.artist = artist;
         this.duration = duration;
         this.size = size;
         this.dateAdded = dateAdded;
+        this.filePath = filePath;
     }
 
     public Uri getUri() {
@@ -59,6 +61,6 @@ public class Music {
                 "Artist: %s\n" +
                 "Duration: %s\n" +
                 "Size: %s\n" +
-                "Date: %s", uri.getPath(), getTitle(), getArtist(), getDuration(), getSize(), getDateAdded());
+                "Date: %s", filePath, getTitle(), getArtist(), getDuration(), getSize(), getDateAdded());
     }
 }

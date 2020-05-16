@@ -3,11 +3,10 @@ package org.mantap.finalcuk.viewmodel;
 import android.app.Application;
 import android.content.ContentUris;
 import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -26,16 +25,16 @@ public class MusicViewModel extends AndroidViewModel {
         this.application = application;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q) //TODO FIX This!
     private void populate() {
         CompletableFuture.runAsync(() -> {
+            //noinspection deprecation
             String[] projection = new String[]{
                     MediaStore.Audio.Media._ID,
                     MediaStore.Audio.Media.TITLE,
                     MediaStore.Audio.Media.ARTIST,
-                    MediaStore.Audio.Media.DURATION,
                     MediaStore.Audio.Media.SIZE,
                     MediaStore.Audio.Media.DATE_ADDED,
+                    MediaStore.Audio.Media.DATA //Deprecated! only use this to get file absolute path!
             };
             String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
             List<Music> tmp = new ArrayList<>();
@@ -48,30 +47,35 @@ public class MusicViewModel extends AndroidViewModel {
                     int titleColumn =
                             cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE);
                     int artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST);
-                    int durationColumn =
-                            cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION);
                     int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE);
                     int dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_ADDED);
+                    //noinspection deprecation
+                    int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
 
                     while (cursor.moveToNext()) {
                         long id = cursor.getLong(idColumn);
                         String title = cursor.getString(titleColumn);
                         String artist = cursor.getString(artistColumn);
-                        int duration = cursor.getInt(durationColumn);
                         int size = cursor.getInt(sizeColumn);
                         long date = cursor.getLong(dateColumn) * 1000;
-
+                        String filePath = cursor.getString(dataColumn);
                         Uri contentUri = ContentUris.withAppendedId(
                                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
-                        tmp.add(new Music(contentUri, title, artist, duration, size, date));
+
+                        int duration;
+                        try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+                            retriever.setDataSource(application.getApplicationContext(), contentUri);
+                            String dur = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                            duration = Integer.parseInt(dur);
+                        }
+                        tmp.add(new Music(contentUri, title, artist, duration, size, date, filePath));
+                        musicList.postValue(tmp);
                     }
                 }
-                musicList.postValue(tmp);
             }
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     public LiveData<List<Music>> getMusicList() {
         populate();
         return musicList;

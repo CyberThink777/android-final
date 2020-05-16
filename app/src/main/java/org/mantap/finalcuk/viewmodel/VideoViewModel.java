@@ -3,11 +3,10 @@ package org.mantap.finalcuk.viewmodel;
 import android.app.Application;
 import android.content.ContentUris;
 import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -26,15 +25,15 @@ public class VideoViewModel extends AndroidViewModel {
         this.application = application;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     private void populate() {
         CompletableFuture.runAsync(() -> {
+            //noinspection deprecation
             String[] projection = new String[]{
                     MediaStore.Video.Media._ID,
                     MediaStore.Video.Media.DISPLAY_NAME,
-                    MediaStore.Video.Media.DURATION,
                     MediaStore.Video.Media.SIZE,
                     MediaStore.Video.Media.DATE_ADDED,
+                    MediaStore.Video.Media.DATA //Deprecated! only use this to get file absolute path!
             };
             String sortOrder = MediaStore.Video.Media.DISPLAY_NAME + " ASC";
             List<Video> tmp = new ArrayList<>();
@@ -46,29 +45,35 @@ public class VideoViewModel extends AndroidViewModel {
                     int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
                     int nameColumn =
                             cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-                    int durationColumn =
-                            cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
                     int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
                     int dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED);
+                    //noinspection deprecation
+                    int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
 
                     while (cursor.moveToNext()) {
                         long id = cursor.getLong(idColumn);
                         String name = cursor.getString(nameColumn);
-                        int duration = cursor.getInt(durationColumn);
                         int size = cursor.getInt(sizeColumn);
                         long date = cursor.getLong(dateColumn) * 1000;
-
+                        String filePath = cursor.getString(dataColumn);
                         Uri contentUri = ContentUris.withAppendedId(
                                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
-                        tmp.add(new Video(contentUri, name, duration, size, date));
+
+                        int duration;
+                        try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
+                            retriever.setDataSource(application.getApplicationContext(), contentUri);
+                            String dur = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                            duration = Integer.parseInt(dur);
+                        }
+
+                        tmp.add(new Video(contentUri, name, duration, size, date, filePath));
+                        videoList.postValue(tmp);
                     }
                 }
-                videoList.postValue(tmp);
             }
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     public LiveData<List<Video>> getVideoList() {
         populate();
         return videoList;
