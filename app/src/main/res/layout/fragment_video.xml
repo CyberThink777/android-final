@@ -4,10 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VideoListFragment"
-    android:paddingTop="4dp"
-    android:paddingStart="4dp"
-    android:paddingEnd="4dp">
+    tools:context=".VideoListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/video_recycler_view"
