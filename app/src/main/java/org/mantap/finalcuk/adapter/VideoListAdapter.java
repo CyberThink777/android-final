@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.mantap.finalcuk.R;
+import org.mantap.finalcuk.listener.CardItemEventListener;
 import org.mantap.finalcuk.model.Video;
 
 import java.io.IOException;
@@ -23,9 +24,11 @@ import java.util.Objects;
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.VideoListViewHolder> {
     private final LayoutInflater inflater;
     private List<Video> videoList;
+    private final CardItemEventListener<Video> listener;
 
-    public VideoListAdapter(Context context) {
+    public VideoListAdapter(Context context, CardItemEventListener<Video> listener) {
         inflater = LayoutInflater.from(context);
+        this.listener = listener;
     }
 
     @NonNull
@@ -36,7 +39,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
     @Override
     public void onBindViewHolder(@NonNull VideoListViewHolder holder, int position) {
-        holder.bind(videoList.get(position));
+        holder.bind(videoList.get(position), listener);
     }
 
     @Override
@@ -60,7 +63,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             thumbnail = itemView.findViewById(R.id.thumbnail);
         }
 
-        void bind(Video video) {
+        void bind(Video video, CardItemEventListener<Video> listener) {
             title.setText(video.getTitle() + "");
             subtitle.setText(String.format("%s | %s", video.getSize(), video.getDuration()));
             option.setOnClickListener(v -> {
@@ -70,6 +73,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
                 //Handle Details
                 popupMenu.getMenu().getItem(1).setOnMenuItemClickListener(item -> onClickDetails(video));
+                //Handle Delte
+                popupMenu.getMenu().getItem(0).setOnMenuItemClickListener(item -> listener.onDelete(itemView, video));
             });
             try {
                 thumbnail.setImageBitmap(itemView.getContext()

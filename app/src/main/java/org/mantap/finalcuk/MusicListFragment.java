@@ -9,10 +9,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.snackbar.Snackbar;
 import org.mantap.finalcuk.adapter.MusicListAdapter;
+import org.mantap.finalcuk.listener.CardItemEventListener;
+import org.mantap.finalcuk.model.Music;
 import org.mantap.finalcuk.viewmodel.MusicViewModel;
 
-public class MusicListFragment extends Fragment {
+public class MusicListFragment extends Fragment implements CardItemEventListener<Music> {
     private MusicViewModel viewModel;
 
     @Override
@@ -26,10 +29,26 @@ public class MusicListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_music, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.music_recycler_view);
-        MusicListAdapter adapter = new MusicListAdapter(this.getContext());
+        MusicListAdapter adapter = new MusicListAdapter(this.getContext(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         viewModel.getMusicList().observe(getViewLifecycleOwner(), adapter::setMusicList);
         return v;
+    }
+
+    @Override
+    public boolean onDelete(View view, Music media) {
+        viewModel.remove(media).thenAcceptAsync(result -> {
+            if (result) { //TODO fix layout Coordinator layout
+                Snackbar.make(view, R.string.delete_success, Snackbar.LENGTH_SHORT)
+                        .show();
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public void onClick(View view, Music media) {
+
     }
 }

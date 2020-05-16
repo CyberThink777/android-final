@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.mantap.finalcuk.R;
+import org.mantap.finalcuk.listener.CardItemEventListener;
 import org.mantap.finalcuk.model.Music;
 
 import java.io.IOException;
@@ -23,9 +24,11 @@ import java.util.Objects;
 public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.MusicListViewHolder> {
     private final LayoutInflater inflater;
     private List<Music> musicList;
+    private final CardItemEventListener<Music> listener;
 
-    public MusicListAdapter(Context context) {
+    public MusicListAdapter(Context context, CardItemEventListener<Music> listener) {
         inflater = LayoutInflater.from(context);
+        this.listener = listener;
     }
 
     @NonNull
@@ -36,7 +39,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
 
     @Override
     public void onBindViewHolder(@NonNull MusicListViewHolder holder, int position) {
-        holder.bind(musicList.get(position));
+        holder.bind(musicList.get(position), listener);
     }
 
     @Override
@@ -60,7 +63,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
             thumbnail = itemView.findViewById(R.id.thumbnail);
         }
 
-        void bind(Music music) {
+        void bind(Music music, CardItemEventListener<Music> listener) {
             title.setText(music.getTitle() + "");
             subtitle.setText(String.format("%s | %s", music.getArtist(), music.getDuration()));
             option.setOnClickListener(v -> {
@@ -69,7 +72,10 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                 popupMenu.show();
                 //Handle Details
                 popupMenu.getMenu().getItem(1).setOnMenuItemClickListener(item -> onClickDetails(music));
+                //Handle Delete
+                popupMenu.getMenu().getItem(0).setOnMenuItemClickListener(item -> listener.onDelete(itemView, music));
             });
+            itemView.setOnClickListener(v -> listener.onClick(v, music));
             try {
                 thumbnail.setImageBitmap(itemView.getContext()
                         .getApplicationContext()

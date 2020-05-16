@@ -54,6 +54,10 @@ public class Music {
         return new Date(dateAdded).toString();
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
     @Override
     public String toString() {
         return String.format("Location: %s\n" +

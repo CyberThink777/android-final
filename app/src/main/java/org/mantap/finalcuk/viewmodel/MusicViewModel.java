@@ -23,9 +23,10 @@ public class MusicViewModel extends AndroidViewModel {
     public MusicViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
+        updateList();
     }
 
-    private void populate() {
+    private void updateList() {
         CompletableFuture.runAsync(() -> {
             //noinspection deprecation
             String[] projection = new String[]{
@@ -65,8 +66,8 @@ public class MusicViewModel extends AndroidViewModel {
                         int duration;
                         try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
                             retriever.setDataSource(application.getApplicationContext(), contentUri);
-                            String dur = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                            duration = Integer.parseInt(dur);
+                            duration = Integer.parseInt(
+                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
                         }
                         tmp.add(new Music(contentUri, title, artist, duration, size, date, filePath));
                         musicList.postValue(tmp);
@@ -77,7 +78,20 @@ public class MusicViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Music>> getMusicList() {
-        populate();
         return musicList;
+    }
+
+    public CompletableFuture<Boolean> remove(Music music) {
+        return CompletableFuture.supplyAsync(() ->
+                application
+                        .getApplicationContext()
+                        .getContentResolver()
+                        .delete(music.getUri(), null, null))
+                .thenApplyAsync(integer -> {
+                    if (integer > 0) {
+                        updateList();
+                        return true;
+                    } else return false;
+                });
     }
 }

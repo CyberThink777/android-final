@@ -23,9 +23,10 @@ public class VideoViewModel extends AndroidViewModel {
     public VideoViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
+        updateList();
     }
 
-    private void populate() {
+    private void updateList() {
         CompletableFuture.runAsync(() -> {
             //noinspection deprecation
             String[] projection = new String[]{
@@ -62,8 +63,8 @@ public class VideoViewModel extends AndroidViewModel {
                         int duration;
                         try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
                             retriever.setDataSource(application.getApplicationContext(), contentUri);
-                            String dur = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                            duration = Integer.parseInt(dur);
+                            duration = Integer.parseInt(
+                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
                         }
 
                         tmp.add(new Video(contentUri, name, duration, size, date, filePath));
@@ -75,7 +76,20 @@ public class VideoViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Video>> getVideoList() {
-        populate();
         return videoList;
+    }
+
+    public CompletableFuture<Boolean> remove(Video video) {
+        return CompletableFuture.supplyAsync(() ->
+                application
+                        .getApplicationContext()
+                        .getContentResolver()
+                        .delete(video.getUri(), null, null))
+                .thenApplyAsync(integer -> {
+                    if (integer > 0) {
+                        updateList();
+                        return true;
+                    } else return false;
+                });
     }
 }
