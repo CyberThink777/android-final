@@ -1,6 +1,8 @@
 package org.mantap.finalcuk.adapter;
 
 import android.content.Context;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
@@ -76,13 +78,27 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                 popupMenu.getMenu().getItem(0).setOnMenuItemClickListener(item -> listener.onDelete(itemView, music));
             });
             itemView.setOnClickListener(v -> listener.onClick(v, music));
-            try {
-                thumbnail.setImageBitmap(itemView.getContext()
-                        .getApplicationContext()
-                        .getContentResolver()
-                        .loadThumbnail(music.getUri(), new Size(128, 128), null));
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                try {
+                    thumbnail.setImageBitmap(itemView.getContext()
+                            .getApplicationContext()
+                            .getContentResolver()
+                            .loadThumbnail(music.getUri(), new Size(128, 128), null));
+                } catch (IOException e) {
+                    Log.e("MusicThumbnail", Objects.requireNonNull(e.getMessage()));
+                }
+            } else {
+                //TODO
+                /*            try {
+                //noinspection deprecation
+                thumbnail.setImageBitmap(
+                        MediaStore.Images.Media.getBitmap(itemView
+                                .getContext()
+                                .getApplicationContext()
+                                .getContentResolver(), music.getAlbumArt()));
             } catch (IOException e) {
                 Log.e("MusicThumbnail", Objects.requireNonNull(e.getMessage()));
+            }*/
             }
         }
 

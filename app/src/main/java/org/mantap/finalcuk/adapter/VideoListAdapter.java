@@ -1,6 +1,7 @@
 package org.mantap.finalcuk.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
@@ -73,16 +74,20 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
                 //Handle Details
                 popupMenu.getMenu().getItem(1).setOnMenuItemClickListener(item -> onClickDetails(video));
-                //Handle Delte
+                //Handle Delete
                 popupMenu.getMenu().getItem(0).setOnMenuItemClickListener(item -> listener.onDelete(itemView, video));
             });
-            try {
-                thumbnail.setImageBitmap(itemView.getContext()
-                        .getApplicationContext()
-                        .getContentResolver()
-                        .loadThumbnail(video.getUri(), new Size(128, 128), null));
-            } catch (IOException e) {
-                Log.e("VideoThumbnail", Objects.requireNonNull(e.getMessage()));
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                try {
+                    thumbnail.setImageBitmap(itemView.getContext()
+                            .getApplicationContext()
+                            .getContentResolver()
+                            .loadThumbnail(video.getUri(), new Size(128, 128), null));
+                } catch (IOException e) {
+                    Log.e("VideoThumbnail", Objects.requireNonNull(e.getMessage()));
+                }
+            } else {
+
             }
         }
 
