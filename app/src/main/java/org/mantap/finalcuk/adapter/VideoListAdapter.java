@@ -77,7 +77,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
                 //Handle Delete
                 popupMenu.getMenu().getItem(0).setOnMenuItemClickListener(item -> listener.onDelete(itemView, video));
             });
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
                     thumbnail.setImageBitmap(itemView.getContext()
                             .getApplicationContext()
@@ -86,14 +86,12 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
                 } catch (IOException e) {
                     Log.e("VideoThumbnail", Objects.requireNonNull(e.getMessage()));
                 }
-            } else {
-
             }
         }
 
         private boolean onClickDetails(Video video) {
             new MaterialAlertDialogBuilder(itemView.getContext())
-                    .setTitle("Details")
+                    .setTitle(R.string.details)
                     .setMessage(video.toString()).show();
             return true;
         }

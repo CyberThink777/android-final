@@ -1,6 +1,7 @@
 package org.mantap.finalcuk.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -78,7 +79,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                 popupMenu.getMenu().getItem(0).setOnMenuItemClickListener(item -> listener.onDelete(itemView, music));
             });
             itemView.setOnClickListener(v -> listener.onClick(v, music));
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
                     thumbnail.setImageBitmap(itemView.getContext()
                             .getApplicationContext()
@@ -88,23 +89,15 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                     Log.e("MusicThumbnail", Objects.requireNonNull(e.getMessage()));
                 }
             } else {
-                //TODO
-                /*            try {
-                //noinspection deprecation
-                thumbnail.setImageBitmap(
-                        MediaStore.Images.Media.getBitmap(itemView
-                                .getContext()
-                                .getApplicationContext()
-                                .getContentResolver(), music.getAlbumArt()));
-            } catch (IOException e) {
-                Log.e("MusicThumbnail", Objects.requireNonNull(e.getMessage()));
-            }*/
+                Uri albumArt = music.getAlbumArt();
+                if (albumArt != null)
+                    thumbnail.setImageURI(music.getAlbumArt());
             }
         }
 
         private boolean onClickDetails(Music music) {
             new MaterialAlertDialogBuilder(itemView.getContext())
-                    .setTitle("Details")
+                    .setTitle(R.string.details)
                     .setMessage(music.toString()).show();
             return true;
         }

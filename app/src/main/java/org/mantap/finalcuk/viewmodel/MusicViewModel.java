@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -35,7 +36,8 @@ public class MusicViewModel extends AndroidViewModel {
                     MediaStore.Audio.Media.ARTIST,
                     MediaStore.Audio.Media.SIZE,
                     MediaStore.Audio.Media.DATE_ADDED,
-                    MediaStore.Audio.Media.DATA //Deprecated! only use this to get file absolute path!
+                    MediaStore.Audio.Media.DATA,//Deprecated in API 29! only use this to get file absolute path!
+                    MediaStore.Audio.Media.ALBUM_ID
             };
             String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
             List<Music> tmp = new ArrayList<>();
@@ -52,6 +54,7 @@ public class MusicViewModel extends AndroidViewModel {
                     int dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_ADDED);
                     //noinspection deprecation
                     int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+                    int albumIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID);
 
                     while (cursor.moveToNext()) {
                         long id = cursor.getLong(idColumn);
@@ -62,19 +65,39 @@ public class MusicViewModel extends AndroidViewModel {
                         String filePath = cursor.getString(dataColumn);
                         Uri contentUri = ContentUris.withAppendedId(
                                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+                        Uri albumArtUri;
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                            albumArtUri = getAlbumArt(cursor.getInt(albumIdColumn));
+                        } else albumArtUri = null;
 
                         int duration;
-                        try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
-                            retriever.setDataSource(application.getApplicationContext(), contentUri);
-                            duration = Integer.parseInt(
-                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-                        }
-                        tmp.add(new Music(contentUri, title, artist, duration, size, date, filePath));
+                        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                        retriever.setDataSource(application.getApplicationContext(), contentUri);
+                        duration = Integer.parseInt(
+                                retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                        retriever.release();
+                        tmp.add(new Music(contentUri, title, artist, duration, size, date, filePath, albumArtUri));
                         musicList.postValue(tmp);
                     }
                 }
             }
         });
+    }
+
+    @SuppressWarnings("deprecation")
+    private Uri getAlbumArt(int id) {
+        try (Cursor cursor = application.getApplicationContext().getContentResolver().query(
+                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Audio.Albums.ALBUM_ART},
+                MediaStore.Audio.Albums._ID + " = ?",
+                new String[]{String.valueOf(id)},
+                null
+        )) {
+            if (cursor != null && cursor.moveToFirst()) {
+                String albumArt = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+                return Uri.parse(albumArt);
+            } else return null;
+        }
     }
 
     public LiveData<List<Music>> getMusicList() {

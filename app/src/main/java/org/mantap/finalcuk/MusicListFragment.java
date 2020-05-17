@@ -39,9 +39,9 @@ public class MusicListFragment extends Fragment implements CardItemEventListener
     @Override
     public boolean onDelete(View view, Music media) {
         viewModel.remove(media).thenAcceptAsync(result -> {
-            if (result) { //TODO fix layout Coordinator layout
+            if (result) {
                 Snackbar.make(view, R.string.delete_success, Snackbar.LENGTH_SHORT)
-                        .show();
+                        .show(); //TODO fix layout
             }
         });
         return true;

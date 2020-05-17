@@ -34,7 +34,7 @@ public class VideoViewModel extends AndroidViewModel {
                     MediaStore.Video.Media.DISPLAY_NAME,
                     MediaStore.Video.Media.SIZE,
                     MediaStore.Video.Media.DATE_ADDED,
-                    MediaStore.Video.Media.DATA //Deprecated! only use this to get file absolute path!
+                    MediaStore.Video.Media.DATA //Deprecated in API 29! only use this to get file absolute path!
             };
             String sortOrder = MediaStore.Video.Media.DISPLAY_NAME + " ASC";
             List<Video> tmp = new ArrayList<>();
@@ -61,12 +61,11 @@ public class VideoViewModel extends AndroidViewModel {
                                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
 
                         int duration;
-                        try (MediaMetadataRetriever retriever = new MediaMetadataRetriever()) {
-                            retriever.setDataSource(application.getApplicationContext(), contentUri);
-                            duration = Integer.parseInt(
-                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-                        }
-
+                        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                        retriever.setDataSource(application.getApplicationContext(), contentUri);
+                        duration = Integer.parseInt(
+                                retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                        retriever.release();
                         tmp.add(new Video(contentUri, name, duration, size, date, filePath));
                         videoList.postValue(tmp);
                     }

@@ -13,8 +13,9 @@ public class Music {
     private final int size;
     private final long dateAdded;
     private final String filePath;
+    private final Uri albumArt;
 
-    public Music(Uri uri, String title, String artist, int duration, int size, long dateAdded, String filePath) {
+    public Music(Uri uri, String title, String artist, int duration, int size, long dateAdded, String filePath, Uri albumArt) {
         this.uri = uri;
         this.title = title;
         this.artist = artist;
@@ -22,6 +23,7 @@ public class Music {
         this.size = size;
         this.dateAdded = dateAdded;
         this.filePath = filePath;
+        this.albumArt = albumArt;
     }
 
     public Uri getUri() {
@@ -56,6 +58,10 @@ public class Music {
 
     public String getFilePath() {
         return filePath;
+    }
+
+    public Uri getAlbumArt() {
+        return albumArt;
     }
 
     @Override
