@@ -3,6 +3,7 @@ package org.mantap.finalcuk;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -22,7 +23,18 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     1);
+        } else {
+            setupActivity();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        setupActivity();
+    }
+
+    private void setupActivity() {
         setContentView(R.layout.activity_main);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         BottomNavigationView botNav = findViewById(R.id.bottom_navigation);
