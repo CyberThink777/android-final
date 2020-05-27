@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import org.mantap.finalcuk.viewmodel.VideoViewModel;
 
 public class VideoListFragment extends Fragment implements CardItemEventListener<Video> {
     private VideoViewModel viewModel;
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class VideoListFragment extends Fragment implements CardItemEventListener
         View v = inflater.inflate(R.layout.fragment_video, container, false);
         RecyclerView recyclerView = v.findViewById(R.id.video_recycler_view);
         VideoListAdapter adapter = new VideoListAdapter(this.getContext(), this);
+        coordinatorLayout = v.findViewById(R.id.coordinatorLayout);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         viewModel.getVideoList().observe(getViewLifecycleOwner(), adapter::setVideoList);
@@ -40,7 +43,7 @@ public class VideoListFragment extends Fragment implements CardItemEventListener
     public boolean onDelete(View view, Video media) {
         viewModel.remove(media).thenAcceptAsync(result -> {
             if (result) {
-                Snackbar.make(view, R.string.delete_success, Snackbar.LENGTH_SHORT)
+                Snackbar.make(coordinatorLayout, R.string.delete_success, Snackbar.LENGTH_SHORT)
                         .show();
             }
         });
