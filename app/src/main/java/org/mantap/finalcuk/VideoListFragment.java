@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -36,6 +37,17 @@ public class VideoListFragment extends Fragment implements CardItemEventListener
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         viewModel.getVideoList().observe(getViewLifecycleOwner(), adapter::setVideoList);
+
+        TextView noItemText = v.findViewById(R.id.no_item);
+        viewModel.getVideoList().observe(getViewLifecycleOwner(), videos -> {
+            if (videos.isEmpty()) {
+                recyclerView.setVisibility(View.GONE);
+                noItemText.setVisibility(View.VISIBLE);
+            } else {
+                recyclerView.setVisibility(View.VISIBLE);
+                noItemText.setVisibility(View.GONE);
+            }
+        });
         return v;
     }
 

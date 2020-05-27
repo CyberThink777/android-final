@@ -67,8 +67,8 @@ public class VideoViewModel extends AndroidViewModel {
                                 retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
                         retriever.release();
                         tmp.add(new Video(contentUri, name, duration, size, date, filePath));
-                        videoList.postValue(tmp);
                     }
+                    videoList.postValue(tmp);
                 }
             }
         });

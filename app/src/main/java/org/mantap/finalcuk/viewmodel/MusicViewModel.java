@@ -77,8 +77,8 @@ public class MusicViewModel extends AndroidViewModel {
                                 retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
                         retriever.release();
                         tmp.add(new Music(contentUri, title, artist, duration, size, date, filePath, albumArtUri));
-                        musicList.postValue(tmp);
                     }
+                    musicList.postValue(tmp);
                 }
             }
         });

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
@@ -36,6 +37,17 @@ public class MusicListFragment extends Fragment implements CardItemEventListener
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         viewModel.getMusicList().observe(getViewLifecycleOwner(), adapter::setMusicList);
+
+        TextView noItemText = v.findViewById(R.id.no_item);
+        viewModel.getMusicList().observe(getViewLifecycleOwner(), musics -> {
+            if (musics.isEmpty()) {
+                recyclerView.setVisibility(View.GONE);
+                noItemText.setVisibility(View.VISIBLE);
+            } else {
+                recyclerView.setVisibility(View.VISIBLE);
+                noItemText.setVisibility(View.GONE);
+            }
+        });
         return v;
     }
 
