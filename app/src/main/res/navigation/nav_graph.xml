@@ -17,9 +17,25 @@
         android:id="@+id/videoListFragment"
         android:name="org.mantap.finalcuk.VideoListFragment"
         android:label="fragment_video"
-        tools:layout="@layout/fragment_video" >
+        tools:layout="@layout/fragment_video">
         <action
             android:id="@+id/action_videoListFragment_to_musicListFragment"
             app:destination="@id/musicListFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/mediaPlayerFragment"
+        android:name="org.mantap.finalcuk.MediaPlayerFragment"
+        android:label="fragment_music_player"
+        tools:layout="@layout/fragment_media_player" />
+    <action
+        android:id="@+id/action_to_mediaPlayerFragment"
+        app:destination="@id/mediaPlayerFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim">
+        <argument
+            android:name="mediaUri"
+            app:argType="android.net.Uri" />
+    </action>
 </navigation>

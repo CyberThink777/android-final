@@ -77,6 +77,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
                 //Handle Delete
                 popupMenu.getMenu().getItem(0).setOnMenuItemClickListener(item -> listener.onDelete(itemView, video));
             });
+            itemView.setOnClickListener(v -> listener.onClick(v, video));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
                     thumbnail.setImageBitmap(itemView.getContext()

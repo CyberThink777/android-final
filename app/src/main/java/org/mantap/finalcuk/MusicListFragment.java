@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
@@ -64,6 +65,8 @@ public class MusicListFragment extends Fragment implements CardItemEventListener
 
     @Override
     public void onClick(View view, Music media) {
-
+        NavGraphDirections.ActionToMediaPlayerFragment action =
+                NavGraphDirections.actionToMediaPlayerFragment(media.getUri());
+        Navigation.findNavController(view).navigate(action);
     }
 }
