@@ -1,6 +1,5 @@
 package org.mantap.finalcuk;
 
-import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
