@@ -72,7 +72,7 @@ public class VideoListFragment extends Fragment implements CardItemEventListener
     public void onClick(View view, int position) {
         NavGraphDirections.ActionToMediaPlayerFragment action =
                 NavGraphDirections.actionToMediaPlayerFragment(videoUris);
-        action.setCurPost(position);
+        action.setCurPos(position);
         Navigation.findNavController(view).navigate(action);
     }
 

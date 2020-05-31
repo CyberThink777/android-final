@@ -31,7 +31,7 @@
             android:name="mediaUris"
             app:argType="android.net.Uri[]" />
         <argument
-            android:name="curPost"
+            android:name="curPos"
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
