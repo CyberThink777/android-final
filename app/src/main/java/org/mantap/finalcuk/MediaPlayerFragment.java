@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -18,7 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MediaPlayerFragment extends Fragment {
     private PlayerView playerView;
     private SimpleExoPlayer player;
-    private Uri musicUri;
+    private Uri[] mediaUris;
     private boolean playWhenReady = true;
     private int currentWindow = 0;
     private long playbackPosition = 0;
@@ -26,7 +27,8 @@ public class MediaPlayerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        musicUri = requireArguments().getParcelable("mediaUri");
+        mediaUris = (Uri[]) requireArguments().getParcelableArray("mediaUris");
+        currentWindow = requireArguments().getInt("curPos");
         BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_navigation);
         bottomNav.setVisibility(View.GONE);
     }
@@ -42,22 +44,27 @@ public class MediaPlayerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_media_player, container, false);
-        playerView = v.findViewById(R.id.music_player_view);
+        playerView = v.findViewById(R.id.media_player_view);
         return v;
     }
 
-    private void initialize(Uri uri) {
+    private void initialize() {
         player = new SimpleExoPlayer.Builder(requireContext()).build();
         playerView.setPlayer(player);
-        MediaSource mediaSource = buildMediaSource(uri);
+        MediaSource mediaSource = buildMediaSource(mediaUris);
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(currentWindow, playbackPosition);
         player.prepare(mediaSource, false, false);
     }
 
-    private MediaSource buildMediaSource(Uri uri) {
+    private MediaSource buildMediaSource(Uri[] uris) {
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(requireContext(), "musicplayer");
-        return new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+        ProgressiveMediaSource.Factory mediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
+        ConcatenatingMediaSource mediaSource = new ConcatenatingMediaSource();
+        for (Uri uri : uris) {
+            mediaSource.addMediaSource(mediaSourceFactory.createMediaSource(uri));
+        }
+        return mediaSource;
     }
 
     private void release() {
@@ -73,7 +80,7 @@ public class MediaPlayerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        initialize(musicUri);
+        initialize();
     }
 
     @Override

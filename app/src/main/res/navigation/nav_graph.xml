@@ -26,16 +26,20 @@
         android:id="@+id/mediaPlayerFragment"
         android:name="org.mantap.finalcuk.MediaPlayerFragment"
         android:label="fragment_music_player"
-        tools:layout="@layout/fragment_media_player" />
+        tools:layout="@layout/fragment_media_player">
+        <argument
+            android:name="mediaUris"
+            app:argType="android.net.Uri[]" />
+        <argument
+            android:name="curPost"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
     <action
         android:id="@+id/action_to_mediaPlayerFragment"
         app:destination="@id/mediaPlayerFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim">
-        <argument
-            android:name="mediaUri"
-            app:argType="android.net.Uri" />
-    </action>
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 </navigation>

@@ -1,5 +1,6 @@
 package org.mantap.finalcuk;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +20,12 @@ import org.mantap.finalcuk.listener.CardItemEventListener;
 import org.mantap.finalcuk.model.Video;
 import org.mantap.finalcuk.viewmodel.VideoViewModel;
 
+import java.util.List;
+
 public class VideoListFragment extends Fragment implements CardItemEventListener<Video> {
     private VideoViewModel viewModel;
     private CoordinatorLayout coordinatorLayout;
+    private Uri[] videoUris;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class VideoListFragment extends Fragment implements CardItemEventListener
             } else {
                 recyclerView.setVisibility(View.VISIBLE);
                 noItemText.setVisibility(View.GONE);
+                setVideoUris(videos);
             }
         });
         return v;
@@ -64,9 +69,16 @@ public class VideoListFragment extends Fragment implements CardItemEventListener
     }
 
     @Override
-    public void onClick(View view, Video media) {
+    public void onClick(View view, int position) {
         NavGraphDirections.ActionToMediaPlayerFragment action =
-                NavGraphDirections.actionToMediaPlayerFragment(media.getUri());
+                NavGraphDirections.actionToMediaPlayerFragment(videoUris);
+        action.setCurPost(position);
         Navigation.findNavController(view).navigate(action);
+    }
+
+    private void setVideoUris(List<Video> videoList) {
+        videoUris = videoList.stream()
+                .map(Video::getUri)
+                .toArray(Uri[]::new);
     }
 }

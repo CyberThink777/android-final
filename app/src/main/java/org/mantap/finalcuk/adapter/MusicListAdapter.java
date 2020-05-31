@@ -77,7 +77,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                 //Handle Delete
                 popupMenu.getMenu().getItem(0).setOnMenuItemClickListener(item -> listener.onDelete(itemView, music));
             });
-            itemView.setOnClickListener(v -> listener.onClick(v, music));
+            itemView.setOnClickListener(v -> listener.onClick(v, getAdapterPosition()));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
                     thumbnail.setImageBitmap(itemView.getContext()

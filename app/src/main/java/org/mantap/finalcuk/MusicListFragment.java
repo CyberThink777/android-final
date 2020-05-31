@@ -1,5 +1,6 @@
 package org.mantap.finalcuk;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +19,12 @@ import org.mantap.finalcuk.listener.CardItemEventListener;
 import org.mantap.finalcuk.model.Music;
 import org.mantap.finalcuk.viewmodel.MusicViewModel;
 
+import java.util.List;
+
 public class MusicListFragment extends Fragment implements CardItemEventListener<Music> {
     private MusicViewModel viewModel;
     private CoordinatorLayout coordinatorLayout;
+    private Uri[] musicUris;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class MusicListFragment extends Fragment implements CardItemEventListener
             } else {
                 recyclerView.setVisibility(View.VISIBLE);
                 noItemText.setVisibility(View.GONE);
+                setMusicUris(musics);
             }
         });
         return v;
@@ -64,9 +69,16 @@ public class MusicListFragment extends Fragment implements CardItemEventListener
     }
 
     @Override
-    public void onClick(View view, Music media) {
+    public void onClick(View view, int position) {
         NavGraphDirections.ActionToMediaPlayerFragment action =
-                NavGraphDirections.actionToMediaPlayerFragment(media.getUri());
+                NavGraphDirections.actionToMediaPlayerFragment(musicUris);
+        action.setCurPost(position);
         Navigation.findNavController(view).navigate(action);
+    }
+
+    private void setMusicUris(List<Music> musicList) {
+        musicUris = musicList.stream()
+                .map(Music::getUri)
+                .toArray(Uri[]::new);
     }
 }
